@@ -1,0 +1,2 @@
+language = "cpp"
+run = "clang++-7 -pthread -o a.out *.cpp -I./usr/include/ -L./usr/lib/x86_64-linux-gnu -lncursesw; ./a.out"
