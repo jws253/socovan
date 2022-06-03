@@ -1,20 +1,24 @@
+// 20211090 조우성
+// 변경사항 1: 코드 가독성 개선
+// 변경사항 2: 게임 오브젝트 이미지 변경
+// 변경사항 3: 맵 수정
 #include <ncurses.h>
 #include <locale.h>
-
 
 #define GYO 10	
 #define RETU 10
 
-int meiro[GYO][RETU] = {
+int meiro[GYO][RETU] = 
+{
 	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 	{1, 0, 0, 0, 0, 0, 1, 0, 0, 1},
 	{1, 1, 1, 1, 1, 0, 1, 0, 0, 1},
-	{1, 0, 0, 0, 0, 0, 1, 0, 0, 1},
-	{1, 0, 0, 0, 1, 1, 1, 0, 0, 1},
+	{1, 1, 0, 0, 0, 0, 1, 0, 0, 1},
+	{1, 0, 0, 1, 1, 1, 1, 0, 0, 1},
 	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
 	{1, 1, 1, 1, 1, 1, 1, 1, 0, 1},
-	{1, 1, 0, 0, 0, 0, 0, 0, 0, 1},
-	{1, 1, 0, 0, 0, 0, 0, 0, 0, 1},
+	{1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+	{1, 0, 0, 0, 1, 0, 0, 0, 0, 1},
 	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 };
 
@@ -28,39 +32,63 @@ void play_start(void)
 	count = 0;
 	px = 1;
 	py = 1;
-	for(y=0; y<GYO; y++)
-		for(x=0; x<RETU; x++)
-			if(meiro[y][x] == 2) meiro[y][x] = 0;	
+	for(y = 0; y < GYO; y++)
+  {
+    for(x = 0; x < RETU; x++)
+    {
+      if(meiro[y][x] == 2)
+      {
+        meiro[y][x] = 0;
+      }
+    }
+  }
 }
 
 void goal_count_check(void)
 {
 	int x, y;
 	goal_count = 0;
-	for(y=0; y<GYO; y++)
-		for(x=0; x<RETU; x++)
-			if(meiro[y][x] == 0) goal_count++;	
+	for(y = 0; y < GYO; y++)
+  {
+    for(x = 0; x < RETU; x++)
+    {
+      if(meiro[y][x] == 0)
+      {
+        goal_count++;
+      }
+    }
+  }
 }
 
 void draw_meiro(void)
 {
 	int x, y;
-	for(y=0; y<GYO; y++){
-		for(x=0; x<RETU; x++){
-			if(x == px && y == py){	
+	for(y=0; y<GYO; y++)
+  {
+		for(x=0; x<RETU; x++)
+    {
+			if(x == px && y == py)
+      {	
 				meiro[y][x] = 2;	
 				count ++;		
-				mvprintw(y,x*2,"🍎"); // printf("O");	
+				mvprintw(y, x*2, "❤️"); // printf("O");
 			}
 			else if(meiro[y][x] == 0)	
-        mvprintw(y,x*2,"  "); //			
+      {
+        mvprintw(y, x*2, "  ");
+      }		
 			else if(meiro[y][x] == 1)	
-				mvprintw(y,x*2,"️⬜️");
+      {
+        mvprintw(y, x*2, "️⬜️");
+      }
 			else if(meiro[y][x] == 2)
-				mvprintw(y,x*2,"🔳");
+      {
+        mvprintw(y, x*2, "🔳");
+      }
 		}
 	}
-  mvprintw(GYO,0,"move: ← ↑ → ↓ restart: ESC");  // 🟩 🟩 🟩 🟫🟫🟫 ❤️❤️❤️ 🍎🍎🍎🍎 
+  mvprintw(GYO,0,"move: ← ↑ → ↓ restart: SPACE");  
+  // 🟩 🟩 🟩 🟫🟫🟫 ❤️❤️❤️ 🍎🍎🍎🍎 
 	// printf("move: ←↑→↓ restart: SPACE\n");	
 }
 
@@ -70,29 +98,38 @@ void key_input(void)
 	key = getch();
 	
   if(key == KEY_UP && meiro[py-1][px] == 0)		
-		py --;	
+  {
+    py --; 
+  }
 	else if(key == KEY_DOWN && meiro[py+1][px] == 0)
-		py ++;
+  {
+    py ++;
+  }
 	else if(key == KEY_LEFT && meiro[py][px-1] == 0)	
-		px --;
+  {
+    px --;
+  }
 	else if(key == KEY_RIGHT && meiro[py][px+1] == 0)	
-		px ++;	
+  {
+    px ++;
+  }
 	else if(key == ' ')		
-		play_start();	
-	else										
-		key_input();						
+  {
+    play_start();
+  }
+	else									
+  {
+    key_input();
+  }					
 }
 
 int main(void)
 {
-
   setlocale(LC_ALL, ""); // UTF 8 출력
-
   initscr(); // ncurses 초기화
   keypad(stdscr, TRUE);
   noecho(); // Don't echo any keypresses
   curs_set(FALSE); // Don't display a cursor
-
 
 	px = 1;		
 	py = 1;				
@@ -100,14 +137,16 @@ int main(void)
 	
 	goal_count_check();	
 	
-	while(1){
+	while(1)
+  {
 		clear(); 
 
 		draw_meiro();	
 
-		if(count == goal_count){	
-       mvprintw(GYO+1,0," Sucess !!"); 
-       getch();
+		if(count == goal_count)
+    {
+      mvprintw(GYO + 1, 0, " Sucess !!"); 
+      getch();
 			break;
 		}
 
@@ -116,6 +155,6 @@ int main(void)
     refresh();
 	}
 
-endwin();
+	endwin();
 	return 0;
 }
